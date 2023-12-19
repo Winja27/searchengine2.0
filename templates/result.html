@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Search - Result</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .result-container {
+            font-size: 16px;
+            color: #1a0dab; /* Google Blue */
+        }
+
+        .result-container li {
+            margin-bottom: 8px;
+        }
+
+        .result-container li:hover {
+            background-color: #f4f4f4; /* Light Gray */
+        }
+
+        .highlight {
+            color: #d93025; /* Google Red */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <ul>
+            {% for item in result %}
+                <li>{{ item | highlight(user_input) }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

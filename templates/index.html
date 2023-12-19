@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Search - Result</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333; /* Dark Gray background */
+            color: #fff; /* White text */
+            text-align: center;
+            margin: 50px;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Align items with space between */
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 350px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            width: 50%; /* Adjust the width of the search container as needed */
+            margin-right: 10px;
+        }
+
+        .search-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #000; /* Black text */
+            background-color: #fff; /* White background */
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .result-container {
+            text-align: left;
+            width: calc(100% - 160px); /* Adjust the width based on your design */
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #444; /* Dark Gray background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #fff; /* White text */
+        }
+
+        .result-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .result-container li {
+            margin-bottom: 8px;
+        }
+
+        .result-container li:hover {
+            background-color: #555; /* Slightly lighter Dark Gray */
+        }
+
+        .highlight {
+            color: #d93025; /* Google Red */
+            text-decoration: underline;
+        }
+        .result-container pre {
+            font-family: 'Courier New', monospace; /* Monospaced font for better alignment */
+            font-size: 14px; /* Adjust font size as needed */
+            color: #ddd; /* Light Gray text */
+            overflow: auto; /* Enable scrolling for long content */
+        }
+
+        .result-container pre:hover {
+            background-color: #555; /* Slightly lighter Dark Gray on hover */
+        }
+        .result-container pre {
+            font-family: 'Courier New', monospace; /* Monospaced font for better alignment */
+            font-size: 14px; /* Adjust font size as needed */
+            color: #ddd; /* Light Gray text */
+            overflow: auto; /* Enable scrolling for long content */
+        }
+
+        .result-container pre:hover {
+            background-color: #555; /* Slightly lighter Dark Gray on hover */
+        }
+
+        .result-container pre span {
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+
+        .result-container pre span:hover {
+            color: #d93025; /* Google Red on individual item hover */
+        }
+    </style>
+</head>
+<body>
+<div class="header-container">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="Logo" class="logo">
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Enter your search...">
+        <button type="button" onclick="search()" class="search-button">Search</button>
+    </div>
+</div>
+
+<div class="result-container" id="resultContainer">
+        <h2>Result:</h2>
+        <pre>
+            {% for item in result %}
+                <span>{{ item | highlight(search_input) }}</span><br>
+            {% endfor %}
+        </pre>
+    </div>
+
+    <script>
+        function search() {
+            var userInput = document.getElementById('searchInput').value;
+
+            // Use fetch API to make an AJAX request
+            fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'user_input=' + encodeURIComponent(userInput),
+            })
+            .then(response => response.json())  // Parse the JSON response
+            .then(data => {
+                // Update the resultContainer
+                document.getElementById('resultContainer').innerHTML = '<h2>Result:</h2><pre>' + data.result.map(item => '<span>' + item + '</span>').join('<br>') + '</pre>';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
